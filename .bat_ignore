@@ -1,0 +1,6 @@
+.git
+.gitignore
+.DS_Store
+create_project.sh
+create_project.bat
+tmp
