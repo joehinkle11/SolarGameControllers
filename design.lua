@@ -37,31 +37,26 @@ SolarGameControllers.addSchema("mygamecontroller", {
             -- example
             transition.to(joyStickBottom, {y = 1000})
             transition.to(dPadBottom, {rotation = 45})
+            return 500 -- return the time before you wish the whole view to be made invisible
         end,
         --
         -- supply one of two options to position. The results will be modified by the player's custom settings, and a margin will be added (adjustable by the player as well). So assume this is a gamepad without margins
         -- things like lefty mode, margin setting, and even manual adjustments are done automatically
         --
         -- option 1: relative to another element. This will give you the element's final resting place
-        --      calcRelativePosition(nameOfOtherElement, defaultMargin, direction)
+        --      calcRelativePosition(nameOfOtherElement, defaultMargin, direction, playerCanChangeDirection)
         --      nameOfOtherElement = a string, the name of another element, the same name you provide as "name" above
         --      defaultMargin = a number, and this can be overridedden by the player and its factored in automatically
         --      direction = a number, provide in degrees the direction you want this element to be from the other element. 0 is to the right, 90 is above, 180 is to the left, and 270 is below. And of course you have everything inbetween
-        --      playerCanChageDirection = a bool, if true players can change the direction parameter when changing the control options
+        --      playerCanChangeDirection = a bool, if true players can change the direction parameter when changing the control options
         calcRelativePosition = {"myabutton", 10, 135, true}, -- this will position this element left and up from myabutton
         -- option 2: absolute position. Assume no margins are set and give a 0 for centers, 1 for right and bottom and -1 for left and top
         -- option 2 example 1:
-        calcAbsolutePosition = function()
-            return 0, 0 -- this will place the button in the center of the screen. do not include margins, as this is done automatically
-        end,
+        calcAbsolutePosition = {0, 0}, -- this will place the button in the center of the screen. do not include margins, as this is done automatically
         -- option 2 example 2:
-        calcAbsolutePosition = function()
-            return 1, 1 -- this will place the button in the bottom right of the screen. do not include margins, as this is done automatically
-        end,
+        calcAbsolutePosition = {1, 1}, -- this will place the button in the bottom right of the screen. do not include margins, as this is done automatically
         -- option 2 example 3:
-        calcAbsolutePosition = function()
-            return -1, 1 -- this will place the button in the bottom left of the screen. do not include margins, as this is done automatically
-        end,
+        calcAbsolutePosition = {-1, 1},-- this will place the button in the bottom left of the screen. do not include margins, as this is done automatically
         --
         -- optional way to animate your button presses. selectedDPad can be an empty table, or it will be one dPadTop, dPadBottom, dPadLeft or dPadRight depending on the direction selected. The joyX joyY values will be the range [-1,1] inclusive if you want to use those values as part of your animation. Do not set the x and y of the top joystick image, as this is automatic and done immediately before this function call
         --

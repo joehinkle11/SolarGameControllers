@@ -19,6 +19,13 @@ local function map(func, tbl)
     end
     return newtbl
 end
+local filter = function(t, fn)
+	local out = {}
+	for _, v in pairs(t) do
+		if fn(v) then out[#out+1] = v end
+	end
+	return out
+end
 
 --
 -- position info
@@ -53,12 +60,10 @@ function lib.newController(schemaName, options)
 	local controlSchema = controlSchemas[schemaName]
 	local options = options or {}
 	options.isOnScreen = options.isOnScreen or false
-	options.isLefty = options.isLefty or false
-	options.useDPad = options.useDPad or false
 	if controlSchema then
-		local controller = VirtualController.create(_idCounter)
+		local controller = VirtualController.create(_idCounter, controlSchema)
 		_idCounter = _idCounter + 1
-		controllersList[controllersList + 1] = {
+		controllersList[#controllersList + 1] = {
 			isOnScreen = options.isOnScreen,
 			controller = controller
 		}
@@ -82,9 +87,12 @@ end
 local alwaysHideOnScreenControls = false
 function lib.requestToShowOnScreenControls(callback)
 	if not alwaysHideOnScreenControls then
-		local availableControllersIds = map(function(controller)
-			return controller.id
+		local availableControllers = filter(controllersList, function(controller)
+			return controller.isOnScreen
 		end)
+		local availableControllersIds = map(function(controller)
+			return controller.controller.id
+		end, availableControllers)
 
 		callback({
 			availableControllersIds = availableControllersIds,
@@ -92,6 +100,24 @@ function lib.requestToShowOnScreenControls(callback)
 				options = options or {}
 				local controllersIdsToShow = options.controllerIds or {}
 				local noAnimation = options.noAnimation or false
+				local controllersToShow = {}
+				for i = 1, #controllersIdsToShow do
+					local controllersId = controllersIdsToShow[i]
+					local controller = nil
+					for j = 1, #controllersList do
+						if controllersList[j].controller.id == controllersId then
+							controller = controllersList[j].controller
+							break
+						end
+					end
+					controllersToShow[#controllersToShow+1] = controller
+				end
+				for j = 1, #controllersList do
+					controllersList[j].controller:hide()
+				end
+				for i = 1, #controllersToShow do
+					controllersToShow[i]:unhide({t = screenT,b = screenB,l = screenL,r = screenR,m=0}, false, false, true, "left", true)
+				end
 
 				controllersGroup.isVisible = true
 			end

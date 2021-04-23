@@ -10,7 +10,7 @@ settings =
 		-- Supported values for orientation:
 		-- portrait, portraitUpsideDown, landscapeLeft, landscapeRight
 		default = "portrait",
-		supported = { "portrait", },
+		supported = { "portrait", "portraitUpsideDown", "landscapeLeft", "landscapeRight" },
 	},
 
 	iphone =
@@ -36,6 +36,9 @@ settings =
 	plugins =
     {
         ["plugin.solarwebsockets"] = {
+            publisherId = "io.joehinkle"
+        },
+		["plugin.quickjs"] = {
             publisherId = "io.joehinkle"
         },
 	}
